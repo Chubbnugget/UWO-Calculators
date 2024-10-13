@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bears Melee Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: white;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            background-color: #212121; 
+        }
+        .calculator, .boosters {
+            border: 1px solid #4498bd;
+            padding: 20px;
+            margin: 10px;
+            width: 45%;
+        }
+        .calculator h2, .boosters h2 {
+            margin-top: 0;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            display: block;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 5px;
+        }
+        .input-group input.invalid {
+            border: 2px solid red;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+        }
+        .result {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+        }   
+        button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background-color: #4498bd;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #213f4e;
+        }
+        .boosters h3 {
+            margin-bottom: 5px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .inline-label {
+            display: inline-block;
+            width: 300px;
+        }
+        .booster-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .booster-table th, .booster-table td {
+            border: 1px solid #4498bd;
+            padding: 4px;
+            text-align: center;
+        }
+        .booster-table th {
+            background-color: #212121;
+        }
+        .spacer {
+            height: 38px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bears Melee Calculator</h1>
+    <div class="container">
+        <div class="calculator">
+            <h2>Base Calculator</h2>
+            <div class="input-group">
+                <label for="crew">Crew:</label>
+                <input type="number" id="crew" value="0">
+                <div class="error" id="crewError"></div>
+            </div>
+            <div class="input-group">
+                <label for="meleeSupport">Melee Support:</label>
+                <input type="number" id="meleeSupport" value="0">
+                <div class="error" id="meleeSupportError"></div>
+            </div>
+            <div class="input-group">
+                <label for="battleLevel">Battle Level:</label>
+                <input type="number" id="battleLevel" value="0">
+                <div class="error" id="battleLevelError"></div>
+            </div>
+            <div class="input-group">
+                <label for="swordplayRank">Swordplay Rank:</label>
+                <input type="number" id="swordplayRank" value="0">
+                <div class="error" id="swordplayRankError"></div>
+            </div>
+            <div class="input-group">
+                <label for="firstAidRank">First Aid Rank:</label>
+                <input type="number" id="firstAidRank" value="0">
+                <div class="error" id="firstAidRankError"></div>
+            </div>
+            <div class="input-group">
+                <label for="characterAttack">Character Attack:</label>
+                <input type="number" id="characterAttack" value="0">
+                <div class="error" id="characterAttackError"></div>
+            </div>
+            <div class="input-group">
+                <label for="characterdefence">Character Defence:</label>
+                <input type="number" id="characterdefence" value="0">
+                <div class="error" id="characterdefenceError"></div>
+            </div>
+            <div class="input-group">
+                <label for="sailorsAbility">Sailors Ability:</label>
+                <input type="number" id="sailorsAbility" value="0">
+                <div class="error" id="sailorsAbilityError"></div>
+            </div>
+            <div class="input-group">
+                <label for="fatigue">Fatigue:</label>
+                <input type="number" id="fatigue" value="0">
+                <div class="error" id="fatigueError"></div>
+            </div>
+            <div class="spacer"></div> <!-- Spacer div -->
+            <div class="result">
+                <label for="attackResult">Base Attack:</label>
+                <input type="number" id="attackResult" value="0" readonly>
+            </div>
+            <div class="result">
+                <label for="defenceResult">Base Defence:</label>
+                <input type="number" id="defenceResult" value="0" readonly>
+            </div>
+            <button type="button" onclick="calculateBase()">Calculate Base Melee</button>
+        </div>
+        
+        <div class="boosters">
+            <h2>Extra Boosters!</h2>
+            <div class="input-group">
+                <label for="exEffectRank"><h3>Ex Effect Rank :</h3></label>
+                <input type="number" id="exEffectRank" value="0">
+                <div class="error" id="exEffectRankError"></div>
+            </div>
+            <div class="input-group">
+                <label for="oxfordSkills"><h3>Oxford Skills :</h3></label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="meleeTactics1"> <span class="inline-label">Melee Tactics 1</span></label>
+                    <label><input type="checkbox" id="meleeTactics2"> <span class="inline-label">Melee Tactics 2</span></label>
+                    <label><input type="checkbox" id="strengthenMelee1"> <span class="inline-label">Strengthen Melee 1</span></label>
+                    <label><input type="checkbox" id="strengthenMelee2"> <span class="inline-label">Strengthen Melee 2</span></label>
+                </div>
+            </div>    
+            <div class="input-group">
+                <label for="shipSkill"><h3>Ship Skills :</h3></label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="preEmptiveAttack"> <span class="inline-label">Pre-Emptive Attack</span></label>
+                    <label><input type="checkbox" id="welcomeMeleeBattle"> <span class="inline-label">Welcome Melee Battle</span></label>
+                    <label><input type="checkbox" id="attackPreventionNet"> <span class="inline-label">Attack Prevention Net</span></label>
+                </div>
+            </div>
+             <!-- Booster Table -->
+             <table class="booster-table">
+                <thead>
+                    <tr>
+                        <th>Oxford Boosts</th>
+                        <th>MT1</th>
+                        <th>MT2</th>
+                        <th>SM1</th>
+                        <th>SM2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Attack :</td>
+                        <td id="mt1-attack">0</td>
+                        <td id="mt2-attack">0</td>
+                        <td id="sm1-attack">0</td>
+                        <td id="sm2-attack">0</td>
+                    </tr>
+                    <tr>
+                        <td>Defence :</td>
+                        <td id="mt1-defence">0</td>
+                        <td id="mt2-defence">0</td>
+                        <td id="sm1-defence">0</td>
+                        <td id="sm2-defence">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="booster-table">
+                <thead>
+                    <tr>
+                        <th>Ship Boosts</th>
+                        <th>PEA</th>
+                        <th>WMB</th>
+                        <th>APN</th>
+                    </tr>
+                    <tr>
+                        <td>Attack :</td>
+                        <td id="pea-attack">0</td>
+                        <td id="wmb-attack">0</td>
+                        <td id="apn-attack">0</td>
+                    </tr>
+                    <tr>
+                        <td>Defence :</td>
+                        <td id="pea-defence">0</td>
+                        <td id="wmb-defence">0</td>
+                        <td id="apn-defence">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="booster-table">
+                <thead>
+                    <tr>
+                        <th>EX Boosts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Attack :</td>
+                        <td id="ex-attack">0</td>
+                    </tr>
+                    <tr>
+                        <td>Defence :</td>
+                        <td id="ex-defence">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="result">
+                <label for="attackBoostResult">Boosted Attack:</label>
+                <input type="number" id="attackBoostResult" value="0" readonly>
+                <div class="error" id="attackResultError"></div>
+            </div>
+            <div class="result">
+                <label for="defenceBoostResult">Boosted Defence:</label>
+                <input type="number" id="defenceBoostResult" value="0" readonly>
+                <div class="error" id="defenceResultError"></div>
+            </div>
+            <button type="button" onclick="calculateBoosts()">Calculate Boosted Melee</button>
+        </div>
+    </div>
+
+    <script>
+        function validateInput(value, min, max, name, id) {
+            const errorDiv = document.getElementById(id + "Error");
+            const inputField = document.getElementById(id);
+            if (isNaN(value) || value < min || value > max) {
+                inputField.classList.add("invalid");
+                errorDiv.style.display = "block";
+                errorDiv.innerText = `${name} must be between ${min} and ${max}`;
+                return false;
+            } else {
+                inputField.classList.remove("invalid");
+                errorDiv.style.display = "none";
+                return true;
+            }
+        }
+
+        function calculateAttack() {
+            const crew = parseFloat(document.getElementById('crew').value);
+            const meleeSupport = parseFloat(document.getElementById('meleeSupport').value);
+            const battleLevel = parseFloat(document.getElementById('battleLevel').value);
+            const swordplayRank = parseFloat(document.getElementById('swordplayRank').value);
+            const characterAttack = parseFloat(document.getElementById('characterAttack').value);
+            const sailorsAbility = parseFloat(document.getElementById('sailorsAbility').value);
+            const fatigue = parseFloat(document.getElementById('fatigue').value);
+
+            if (!validateInput(crew, 0, 1000, "Crew", "crew") ||
+                !validateInput(meleeSupport, 0, 100, "Melee Support", "meleeSupport") ||
+                !validateInput(battleLevel, 0, 100, "Battle Level", "battleLevel") ||
+                !validateInput(swordplayRank, 0, 20, "Swordplay Rank", "swordplayRank") ||
+                !validateInput(characterAttack, 0, 1000, "Character Attack", "characterAttack") ||
+                !validateInput(sailorsAbility, 0, 100, "Sailors Ability", "sailorsAbility") ||
+                !validateInput(fatigue, 0, 100, "Fatigue", "fatigue")) {
+                return;
+            }
+
+            const attack = Math.floor(crew / 2) + Math.floor(meleeSupport * 5) +
+                           Math.floor(battleLevel / 2) + Math.floor(swordplayRank * 3) +
+                           Math.floor(characterAttack / 4) + Math.floor((sailorsAbility - 2) / 10) -
+                           Math.floor((fatigue + 5) / 10);
+
+            document.getElementById('attackResult').value = attack;
+        }
+
+        function calculatedefence() {
+            const crew = parseFloat(document.getElementById('crew').value);
+            const battleLevel = parseFloat(document.getElementById('battleLevel').value);
+            const firstAidRank = parseFloat(document.getElementById('firstAidRank').value);
+            const characterdefence = parseFloat(document.getElementById('characterdefence').value);
+            const fatigue = parseFloat(document.getElementById('fatigue').value);
+
+            if (!validateInput(crew, 0, 500, "Crew", "crew") ||
+                !validateInput(battleLevel, 0, 100, "Battle Level", "battleLevel") ||
+                !validateInput(firstAidRank, 0, 20, "First Aid Rank", "firstAidRank") ||
+                !validateInput(characterdefence, 0, 1000, "Character Defence", "characterdefence") ||
+                !validateInput(fatigue, 0, 100, "Fatigue", "fatigue")) {
+                return;
+            }
+
+            const defence = Math.floor(crew / 4) + Math.floor(battleLevel / 2) +
+                            Math.floor(firstAidRank * 3) + Math.floor(characterdefence / 3) +
+                            Math.floor((fatigue - 1) / 10);
+
+            document.getElementById('defenceResult').value = defence;
+        }
+
+        function calculateBoosts() {
+            const exEffectRank = parseFloat(document.getElementById('exEffectRank').value);
+            const meleeTactics1 = document.getElementById('meleeTactics1').checked;
+            const meleeTactics2 = document.getElementById('meleeTactics2').checked;
+            const strengthenMelee1 = document.getElementById('strengthenMelee1').checked;
+            const strengthenMelee2 = document.getElementById('strengthenMelee2').checked;
+            const preEmptiveAttack = document.getElementById('preEmptiveAttack').checked;
+            const welcomeMeleeBattle = document.getElementById('welcomeMeleeBattle').checked;
+            const attackPreventionNet = document.getElementById('attackPreventionNet').checked;
+            const attack = parseFloat(document.getElementById('attackResult').value);
+            const defence = parseFloat(document.getElementById('defenceResult').value);
+
+            if (!validateInput(attack, 1, 9999, "Base Attack", "attackResult") ||
+                !validateInput(defence, 1, 9999, "Base Defence", "defenceResult")) {
+                return;
+            }
+
+            let exResult = 0;
+            if (exEffectRank >= 1) {
+                exResult = Math.floor(exEffectRank * 10);
+            }
+            document.getElementById('ex-attack').innerText = exResult;
+            document.getElementById('ex-defence').innerText = exResult;
+
+            let mt1Attack = 0, mt1Defence = 0;
+            if (meleeTactics1) {
+                mt1Attack = Math.floor(attack * 0.1);
+                mt1Defence = Math.floor(defence * 0.1);
+            }
+            document.getElementById('mt1-attack').innerText = mt1Attack;
+            document.getElementById('mt1-defence').innerText = mt1Defence;
+
+            let mt2Attack = 0, mt2Defence = 0;
+            if (meleeTactics2) {
+                mt2Attack = Math.floor(attack * 0.15);
+                mt2Defence = Math.floor(defence * 0.15);
+            }
+            document.getElementById('mt2-attack').innerText = mt2Attack;
+            document.getElementById('mt2-defence').innerText = mt2Defence;
+
+            let sm1Attack = 0;
+            if (strengthenMelee1) {
+                sm1Attack = Math.floor(attack * 0.05);
+            }
+            document.getElementById('sm1-attack').innerText = sm1Attack;
+
+            let sm2Attack = 0;
+            if (strengthenMelee2) {
+                sm2Attack = Math.floor(attack * 0.1);
+            }
+            document.getElementById('sm2-attack').innerText = sm2Attack;
+
+            let peaAttack = 0;
+            if (preEmptiveAttack) {
+                peaAttack = Math.floor(attack * 0.2);
+            }
+            document.getElementById('pea-attack').innerText = peaAttack;
+
+            let wmbDefence = 0;
+            if (welcomeMeleeBattle) {
+                wmbDefence = Math.floor(defence);
+            }
+            document.getElementById('wmb-defence').innerText = wmbDefence;
+
+            let apnDefence = 0;
+            if (attackPreventionNet) {
+                apnDefence = Math.floor(defence * 0.3);
+            }
+            document.getElementById('apn-defence').innerText = apnDefence;
+
+            document.getElementById('attackBoostResult').value = Math.floor(attack + exResult + mt1Attack + mt2Attack + sm1Attack + sm2Attack + peaAttack);
+            document.getElementById('defenceBoostResult').value = Math.floor(defence + exResult + mt1Defence + mt2Defence + wmbDefence + apnDefence);
+        }
+        function calculateBase() {
+            calculateAttack();
+            calculatedefence();
+        }
+    </script>
+</body>
+</html>
